@@ -1,0 +1,84 @@
+[gd_scene load_steps=15 format=3 uid="uid://vqwykledn1se"]
+
+[ext_resource type="PackedScene" uid="uid://cy1o8fsmyj6kk" path="res://platforms/platform.tscn" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dkmt5burpiyml" path="res://PlatformSpawner.tscn" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://bygi6325ruky3" path="res://scripts/sunlight.gd" id="1_lquwl"]
+[ext_resource type="PackedScene" uid="uid://dvlfbsjqfug5o" path="res://powerups/powerup_speed_boost.tscn" id="3_1bvp3"]
+[ext_resource type="Script" uid="uid://bh247de8kpegv" path="res://scripts/player.gd" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://dqjpx6rl7shf0" path="res://PauseMenu.tscn" id="6_7mycd"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("ProceduralSkyMaterial_7dm0k")
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 1
+sky = SubResource("Sky_ig7tw")
+glow_enabled = true
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1bvp3"]
+friction = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_color = Color(1, 0.0941176, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_h2yge"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+
+[node name="Main" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.79149, 0.611182, 0, -0.611182, -0.79149, -5.44032, 21.1247, -12.0728)
+shadow_enabled = true
+sky_mode = 1
+script = ExtResource("1_lquwl")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0xm2m")
+
+[node name="PlatformSpawner" parent="." node_paths=PackedStringArray("player") instance=ExtResource("1_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00983071, -5.48034)
+platform_scene = ExtResource("1_0xm2m")
+player = NodePath("../Player")
+powerup_speed_boost = ExtResource("3_1bvp3")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.842631, 0.538492, 0, -0.538492, 0.842631, 0, 5.73572, 8.62614)
+fov = 90.0
+
+[node name="Player" type="RigidBody3D" parent="." node_paths=PackedStringArray("sphere_mesh", "box_mesh", "camera")]
+top_level = true
+physics_material_override = SubResource("PhysicsMaterial_1bvp3")
+continuous_cd = true
+contact_monitor = true
+script = ExtResource("3_h2yge")
+sphere_mesh = NodePath("PlayerSphereMesh")
+box_mesh = NodePath("PlayerBoxMesh")
+camera = NodePath("../Camera3D")
+
+[node name="Mesh" type="MeshInstance3D" parent="Player"]
+skeleton = NodePath("")
+
+[node name="PlayerBoxMesh" type="MeshInstance3D" parent="Player"]
+visible = false
+material_override = SubResource("StandardMaterial3D_h2yge")
+mesh = SubResource("BoxMesh_h2yge")
+skeleton = NodePath("")
+
+[node name="PlayerSphereMesh" type="MeshInstance3D" parent="Player"]
+visible = false
+mesh = SubResource("SphereMesh_h2yge")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("6_7mycd")]

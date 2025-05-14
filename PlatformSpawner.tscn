@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkmt5burpiyml"]
+
+[ext_resource type="Script" uid="uid://d13vw6lgdiou" path="res://scripts/platform_spawner.gd" id="1_waes2"]
+
+[node name="PlatformSpawner" type="Node3D"]
+script = ExtResource("1_waes2")
